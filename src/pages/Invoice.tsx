@@ -1,6 +1,7 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Copy } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 interface PurchasedProduct {
   name: string;
@@ -12,6 +13,8 @@ interface PurchasedProduct {
 const purchasedProducts: PurchasedProduct[] = [
   { name: 'White Watch', quantity: 5, unitPrice: 599, discount: 10 },
   { name: 'Chains', quantity: 2, unitPrice: 1499, discount: 5 },
+  { name: 'Mobiles', quantity: 1, unitPrice: 4999, discount: 15 },
+  { name: 'Formal Shirt', quantity: 3, unitPrice: 999, discount: 0 },
 ];
 
 function Invoice() {
@@ -25,6 +28,38 @@ function Invoice() {
   const gst = (subtotal - additionalDiscount) * 0.18;
   const total = subtotal - additionalDiscount + gst;
 
+  const handleDownloadPDF = async () => {
+    const element = document.getElementById('invoice-content');
+    if (!element) return;
+
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        logging: false,
+        useCORS: true
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.save('invoice.pdf');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
+  };
+
+  const handleCopyInvoiceId = () => {
+    navigator.clipboard.writeText('INV-2023-456');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
@@ -33,16 +68,22 @@ function Invoice() {
             <ArrowLeft size={20} />
             <span>Back to Dashboard</span>
           </Link>
-          <button className="bg-black text-white px-4 py-2 rounded-lg">
+          <button 
+            onClick={handleDownloadPDF}
+            className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition-colors"
+          >
             Download Invoice
           </button>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div id="invoice-content" className="bg-white rounded-xl shadow-sm overflow-hidden">
           <div className="bg-yellow-400 p-6">
             <div className="flex justify-between items-center">
               <h1 className="text-xl font-bold">Invoice Details</h1>
-              <button className="flex items-center gap-2 text-sm">
+              <button 
+                onClick={handleCopyInvoiceId}
+                className="flex items-center gap-2 text-sm hover:text-gray-700 transition-colors"
+              >
                 <Copy size={16} />
                 Copy Invoice ID
               </button>
