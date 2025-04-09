@@ -3,8 +3,6 @@ import React from 'react';
 const countries = [
   { name: 'United States', percentage: '35%', flag: '🇺🇸' },
   { name: 'United Kingdom', percentage: '27%', flag: '🇬🇧' },
-  { name: 'France', percentage: '20%', flag: '🇫🇷' },
-  { name: 'Argentina', percentage: '18%', flag: '🇦🇷' },
 ];
 
 export default function CustomerMap() {
