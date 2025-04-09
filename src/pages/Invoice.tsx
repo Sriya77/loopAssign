@@ -12,8 +12,6 @@ interface PurchasedProduct {
 const purchasedProducts: PurchasedProduct[] = [
   { name: 'White Watch', quantity: 5, unitPrice: 599, discount: 10 },
   { name: 'Chains', quantity: 2, unitPrice: 1499, discount: 5 },
-  { name: 'Mobiles', quantity: 1, unitPrice: 4999, discount: 15 },
-  { name: 'Formal Shirt', quantity: 3, unitPrice: 999, discount: 0 },
 ];
 
 function Invoice() {
